@@ -84,7 +84,6 @@ If you find PowerModels useful in your work, we kindly request that you cite the
 ```
 Citation of the orginal works for problem denifitions (e.g. OPF) and [power flow formulations](https://lanl-ansi.github.io/PowerModels.jl/stable/formulation-details/) (e.g. SOC) is also encouraged when publishing works that use PowerModels.
 
-
 ## License
 
 This code is provided under a BSD license as part of the Multi-Infrastructure Control and Optimization Toolkit (MICOT) project, LA-CC-13-108.

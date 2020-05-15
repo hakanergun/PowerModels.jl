@@ -444,9 +444,18 @@ function _mp2pm_branch!(data::Dict{String,Any})
         append!(branches, data["ne_branch"])
     end
     for branch in branches
-        if branch["tap"] == 0.0
-            branch["transformer"] = false
+        if branch["tap"] == 0.0 && branch["shift"] == 0.0
+            if haskey(branch,"tap_fr_max")
+                if branch["tappable"] == 1 || branch["shiftable"] == 1
+                    branch["transformer"] = true
+                else
+                    branch["transformer"] = false
+                end
+            else
+                branch["transformer"] = false
+            end
             branch["tap"] = 1.0
+            branch["tap_fr"] = 1.0
         else
             branch["transformer"] = true
         end
@@ -805,7 +814,7 @@ function export_matpower(io::IO, data::Dict{String,Any})
         if idx != gen["index"]
             Memento.warn(_LOGGER, "The index of the generator does not match the matpower assigned index. Any data that uses generator indexes for reference is corrupted.");
         end
-        println(io, 
+        println(io,
             "\t", gen["gen_bus"],
             "\t", _get_default(gen, "pg"),
             "\t", _get_default(gen, "qg"),
@@ -911,7 +920,7 @@ function export_matpower(io::IO, data::Dict{String,Any})
     println(io, "];")
     println(io)
 
-    if length(dclines) > 0 
+    if length(dclines) > 0
         # print the dcline data
         println(io, "%% dcline data")
         println(io, "%    f_bus    t_bus    status    Pf    Pt    Qf    Qt    Vf    Vt    Pmin    Pmax    QminF    QmaxF    QminT    QmaxT    loss0    loss1")

@@ -58,6 +58,14 @@ constraint_ohms_y_from
 constraint_ohms_y_to
 ```
 
+
+### Ohm's Law Constraints for variable transformers (OLTTC + PST)
+
+```@docs
+constraint_variable_transformer_y_from
+constraint_variable_transformer_y_to
+```
+
 ### On/Off Ohm's Law Constraints
 
 ```@docs

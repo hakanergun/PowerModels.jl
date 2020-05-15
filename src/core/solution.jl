@@ -175,4 +175,3 @@ end
 function sol_data_model!(pm::AbstractPowerModel, solution::Dict)
     Memento.warn(_LOGGER, "sol_data_model! not defined for power model of type $(typeof(pm))")
 end
-
