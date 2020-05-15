@@ -78,8 +78,8 @@ function _create_starbus_from_transformer(pm_data::Dict, transformer::Dict)::Dic
 
     # transformer starbus ids will be one order of magnitude larger than highest real bus id
     base = convert(Int, 10 ^ ceil(log10(abs(_find_max_bus_id(pm_data)))))
-    starbus_id = transformer["I"] + base
-
+    #starbus_id = transformer["I"] + base
+    starbus_id = transformer["id"] + base
     _init_bus!(starbus, starbus_id)
 
     starbus["name"] = "$(transformer["I"]) starbus"
@@ -341,7 +341,9 @@ function _psse2pm_transformer!(pm_data::Dict, pti_data::Dict, import_all::Bool)
     end
 
     if haskey(pti_data, "TRANSFORMER")
+        tr_id = 1
         for transformer in pti_data["TRANSFORMER"]
+            transformer["id"] = tr_id
             if transformer["K"] == 0  # Two-winding Transformers
                 sub_data = Dict{String,Any}()
 
@@ -489,8 +491,11 @@ function _psse2pm_transformer!(pm_data::Dict, pti_data::Dict, import_all::Bool)
                             sub_data["tap"] *= transformer["NOMV$m"]
                         end
                     end
-
-                    sub_data["br_status"] = transformer["STAT"]
+                    if transformer["STAT"] > 1
+                         sub_data["br_status"] = 1 - Int(transformer["STAT"] == m)
+                    else
+                        sub_data["br_status"] = transformer["STAT"]
+                    end
 
                     sub_data["angmin"] = 0.0
                     sub_data["angmax"] = 0.0
@@ -509,6 +514,7 @@ function _psse2pm_transformer!(pm_data::Dict, pti_data::Dict, import_all::Bool)
                     push!(pm_data["branch"], sub_data)
                 end
             end
+        tr_id = tr_id + 1
         end
     end
 end
